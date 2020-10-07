@@ -10,6 +10,7 @@ using ScoldProtect.Core;
 using ScoldProtect.Core.Rename;
 using ScoldProtect.Core.SizeOFF;
 using ScoldProtect.Core.String;
+using ScoldProtect.Core.Junk;
 
 namespace ScoldProtect
 {
@@ -18,6 +19,7 @@ namespace ScoldProtect
         static void Main(string[] args)
         {
             ModuleDefMD module = ModuleDefMD.Load(args[0]);
+            Junk.Run(module)
             StringEnc2.Run(module);
             SizeOFF.Run(module);
             StringEnc.Run(module);

@@ -32,8 +32,39 @@ namespace ScoldProtect.Core.Junk
 				epBody.Instructions.Add(OpCodes.Ldc_I4_0.ToInstruction());
 				epBody.Instructions.Add(OpCodes.Ret.ToInstruction());
 				module.Types.Add(junkattribute);
-            }
-        }
+			}
+		}
+		public static void junkfield(ModuleDefMD module)
+		{
+			foreach (TypeDef typeDef in module.Types)
+			{
+				foreach (MethodDef methodDef in typeDef.Methods.ToArray<MethodDef>())
+				{
+					FieldDefUser fieldDefUser = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.Int32), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
+					typeDef.Fields.Add(fieldDefUser);
+					if (methodDef.HasBody && methodDef.Body.HasInstructions && !methodDef.Body.HasExceptionHandlers) ;
+					{
+						if (methodDef.IsVirtual) continue;
+						Local local = new Local(module.CorLibTypes.UIntPtr);
+						Local local2 = new Local(module.CorLibTypes.UInt32);
+						Local local3 = new Local(module.CorLibTypes.IntPtr);
+						methodDef.Body.Variables.Add(local);
+						methodDef.Body.Variables.Add(local2);
+						methodDef.Body.Variables.Add(local3);
+						for (int i = 0; i < methodDef.Body.Instructions.Count - 2; i++)
+						{
+							methodDef.Body.Instructions.Insert(i + 1, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
+							methodDef.Body.Instructions.Insert(i + 2, OpCodes.Stloc.ToInstruction(local));
+							methodDef.Body.Instructions.Insert(i + 3, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
+							methodDef.Body.Instructions.Insert(i + 4, OpCodes.Stloc.ToInstruction(local2));
+							methodDef.Body.Instructions.Insert(i + 5, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
+							methodDef.Body.Instructions.Insert(i + 6, OpCodes.Stloc.ToInstruction(local3));
+							i += 6;
+						}
+					}
+				}
+			}
+		}
         public static Random Random = new Random();
         public static string Ascii = "1234567890";
 		public static string Ascii2 = "mnbvcxzlkjhgfdsapoiuytrewq0987654321";

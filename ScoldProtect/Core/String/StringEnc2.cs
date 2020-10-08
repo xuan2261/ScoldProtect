@@ -1,7 +1,7 @@
 ﻿
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
-using ScoldProtect.Core.Helper;
+using Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,6 +46,7 @@ namespace ScoldProtect.Core.String
                 }
             }
         }
+
 
         public static string Encrypt(string plainText)
         {

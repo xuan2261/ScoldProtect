@@ -1,6 +1,6 @@
 ﻿using dnlib.DotNet;
 using dnlib.DotNet.Emit;
-using ScoldProtect.Core.Helper;
+using Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

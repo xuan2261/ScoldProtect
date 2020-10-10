@@ -11,9 +11,9 @@ namespace ScoldProtect.Core.Junk
     {
         public static void Run(ModuleDefMD module)
         {
-            for (int i = 0; i < 150; i++)
+			for (int i = 0; i < 150; i++)
             {
-                var junkattribute = new TypeDefUser("ScoldProtect" + RandomString(Random.Next(10, 20), Ascii), module.CorLibTypes.Object.TypeDefOrRef);
+				var junkattribute = new TypeDefUser("ScoldProtect" + RandomString(Random.Next(10, 20), Ascii), module.CorLibTypes.Object.TypeDefOrRef);
 				MethodDef entryPoint = new MethodDefUser(RandomString(Random.Next(10, 20), Ascii2),
 					MethodSig.CreateStatic(module.CorLibTypes.Int32, new SZArraySig(module.CorLibTypes.UIntPtr)));
 				entryPoint.Attributes = MethodAttributes.Private | MethodAttributes.Static |
@@ -40,26 +40,36 @@ namespace ScoldProtect.Core.Junk
 			{
 				foreach (MethodDef methodDef in typeDef.Methods.ToArray<MethodDef>())
 				{
-					FieldDefUser fieldDefUser = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.Int32), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
+					FieldDefUser fieldDefUser = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.String), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
+					FieldDefUser fieldDefUser2 = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.UIntPtr), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
+					FieldDefUser fieldDefUser3 = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.IntPtr), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
+					FieldDefUser fieldDefUser4 = new FieldDefUser(RandomString(Random.Next(10, 20), Ascii2), new FieldSig(module.CorLibTypes.UInt32), FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static);
 					typeDef.Fields.Add(fieldDefUser);
+					typeDef.Fields.Add(fieldDefUser2);
+					typeDef.Fields.Add(fieldDefUser3);
+					typeDef.Fields.Add(fieldDefUser4);
 					if (methodDef.HasBody && methodDef.Body.HasInstructions && !methodDef.Body.HasExceptionHandlers) ;
 					{
 						if (methodDef.IsVirtual) continue;
 						Local local = new Local(module.CorLibTypes.UIntPtr);
 						Local local2 = new Local(module.CorLibTypes.UInt32);
 						Local local3 = new Local(module.CorLibTypes.IntPtr);
+						Local local4 = new Local(module.CorLibTypes.String);
 						methodDef.Body.Variables.Add(local);
 						methodDef.Body.Variables.Add(local2);
 						methodDef.Body.Variables.Add(local3);
+						methodDef.Body.Variables.Add(local4);
 						for (int i = 0; i < methodDef.Body.Instructions.Count - 2; i++)
 						{
 							methodDef.Body.Instructions.Insert(i + 1, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
-							methodDef.Body.Instructions.Insert(i + 2, OpCodes.Stloc.ToInstruction(local));
-							methodDef.Body.Instructions.Insert(i + 3, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
-							methodDef.Body.Instructions.Insert(i + 4, OpCodes.Stloc.ToInstruction(local2));
-							methodDef.Body.Instructions.Insert(i + 5, OpCodes.Ldsfld.ToInstruction(fieldDefUser));
-							methodDef.Body.Instructions.Insert(i + 6, OpCodes.Stloc.ToInstruction(local3));
-							i += 6;
+							methodDef.Body.Instructions.Insert(i + 2, OpCodes.Stloc.ToInstruction(local4));
+							methodDef.Body.Instructions.Insert(i + 3, OpCodes.Ldsfld.ToInstruction(fieldDefUser2));
+							methodDef.Body.Instructions.Insert(i + 4, OpCodes.Stloc.ToInstruction(local));
+							methodDef.Body.Instructions.Insert(i + 5, OpCodes.Ldsfld.ToInstruction(fieldDefUser4));
+							methodDef.Body.Instructions.Insert(i + 6, OpCodes.Stloc.ToInstruction(local2));
+							methodDef.Body.Instructions.Insert(i + 7, OpCodes.Ldsfld.ToInstruction(fieldDefUser3));
+							methodDef.Body.Instructions.Insert(i + 8, OpCodes.Stloc.ToInstruction(local3));
+							i += 8;
 						}
 					}
 				}

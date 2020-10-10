@@ -11,7 +11,6 @@ namespace ScoldProtect.Core.Rename
     {
         public static void Run(ModuleDef module)
         {
-            module.Name = "ScoldProtect";
             foreach (TypeDef type in module.Types)
             {
                 type.Name = RandomString(Random.Next(90, 120), Ascii);
@@ -20,23 +19,23 @@ namespace ScoldProtect.Core.Rename
                 {
                     continue;
                 }
+                foreach (MethodDef method in type.Methods)
+                {
+                    if (method.IsRuntimeSpecialName || method.IsVirtual) continue;
+                    method.Name = RandomString(Random.Next(90, 120), Ascii);
+                }
                 foreach (PropertyDef property in type.Properties)
                 {
                     if (property.IsRuntimeSpecialName) continue;
                     property.Name = RandomString(Random.Next(90, 120), Ascii);
                 }
-                foreach (var field in type.Fields)
+                foreach (FieldDef field in type.Fields)
                 {
                     field.Name = RandomString(Random.Next(90, 120), Ascii);
                 }
                 foreach (EventDef eventdef in type.Events)
                 {
                     eventdef.Name = RandomString(Random.Next(90, 120), Ascii);
-                }
-                foreach (MethodDef method in type.Methods)
-                {
-                    if (method.IsConstructor || method.IsRuntimeSpecialName || method.IsRuntime || method.IsStaticConstructor || method.IsVirtual) continue;
-                    method.Name = RandomString(Random.Next(90, 120), Ascii);
                 }
             }
         }

@@ -25,6 +25,7 @@ namespace ScoldProtect
         {
             ModuleDefMD module = ModuleDefMD.Load(args[0]);
             Junk.Run(module);
+            Junk.JunkString(module);
             StringEnc2.Run(module);
             SizeOFF.Run(module);
             StringEnc.Run(module);
@@ -34,7 +35,6 @@ namespace ScoldProtect
             Rename.Run(module);
             proxy.Run(module);
             hideMethods.Execute(module);
-            hideMethods.Run(module);
             var text2 = Path.GetDirectoryName(args[0]);
             if (text2 != null && !text2.EndsWith("\\"))
             { text2 += "\\"; }

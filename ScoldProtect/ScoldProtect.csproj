@@ -49,9 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Flow\Block.cs" />
+    <Compile Include="Core\Flow\Blocks.cs" />
+    <Compile Include="Core\Flow\ControlFlow.cs" />
     <Compile Include="Core\Helper\InjectContext.cs" />
     <Compile Include="Core\Helper\InjectHelper.cs" />
+    <Compile Include="Core\hideMethods\hideMethods.cs" />
     <Compile Include="Core\Junk\Junk.cs" />
+    <Compile Include="Core\Numbers\Numbers.cs" />
     <Compile Include="Core\Proxy\proxy.cs" />
     <Compile Include="Core\Rename\Rename.cs" />
     <Compile Include="Core\SizeOFF\SizeOFF.cs" />

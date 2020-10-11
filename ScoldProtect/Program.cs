@@ -8,7 +8,10 @@ using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnlib.DotNet.Writer;
 using ScoldProtect.Core;
+using ScoldProtect.Core.Flow;
+using ScoldProtect.Core.hideMethods;
 using ScoldProtect.Core.Junk;
+using ScoldProtect.Core.Numbers;
 using ScoldProtect.Core.Proxy;
 using ScoldProtect.Core.Rename;
 using ScoldProtect.Core.SizeOFF;
@@ -21,13 +24,17 @@ namespace ScoldProtect
         static void Main(string[] args)
         {
             ModuleDefMD module = ModuleDefMD.Load(args[0]);
-            SizeOFF.Run(module);
-            Junk.junkfield(module);
             Junk.Run(module);
             StringEnc2.Run(module);
+            SizeOFF.Run(module);
             StringEnc.Run(module);
+            ControlFlow.Execute(module);
+            Junk.junkfield(module);
+            Numbers.Run(module);
             Rename.Run(module);
             proxy.Run(module);
+            hideMethods.Execute(module);
+            hideMethods.Run(module);
             var text2 = Path.GetDirectoryName(args[0]);
             if (text2 != null && !text2.EndsWith("\\"))
             { text2 += "\\"; }
@@ -39,5 +46,5 @@ namespace ScoldProtect
                 Logger = DummyLogger.NoThrowInstance
             });
         }
-  }  
+	}  
 }

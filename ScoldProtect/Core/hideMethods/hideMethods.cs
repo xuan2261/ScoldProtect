@@ -17,32 +17,6 @@ namespace ScoldProtect.Core.hideMethods
 			return new string(Enumerable.Repeat(chars, length)
 			  .Select(s => s[Random.Next(s.Length)]).ToArray());
 		}
-		// this form https://github.com/RealSerpent/AtomicObfuscator/
-		public static void Run(ModuleDef md)
-		{
-			foreach (TypeDef typeDef in md.Types)
-			{
-				bool isGlobalModuleType = typeDef.IsGlobalModuleType;
-				if (!isGlobalModuleType)
-				{
-					foreach (MethodDef methodDef in typeDef.Methods)
-					{
-						bool flag = methodDef.HasBody && methodDef.Body.HasInstructions && !methodDef.Body.HasExceptionHandlers;
-						if (flag)
-						{
-							int num = 0;
-							if (num < methodDef.Body.Instructions.Count - 2)
-							{
-								Instruction target = methodDef.Body.Instructions[num + 1];
-								methodDef.Body.Instructions.Insert(num + 1, Instruction.Create(OpCodes.Unaligned, byte.MaxValue));
-								methodDef.Body.Instructions.Insert(num + 1, Instruction.Create(OpCodes.Br_S, target));
-								num += 2;
-							}
-						}
-					}
-				}
-			}
-		}
 		public static void Execute(ModuleDefMD asm)
 		{
 			asm.Mvid = null;
@@ -81,8 +55,13 @@ namespace ScoldProtect.Core.hideMethods
 							methodDef.Body.Instructions.Insert(9, new Instruction(OpCodes.Ldloc, local2));
 							methodDef.Body.Instructions.Insert(10, new Instruction(OpCodes.Brtrue, methodDef.Body.Instructions[10]));
 							methodDef.Body.Instructions.Insert(11, new Instruction(OpCodes.Ret));
-							methodDef.Body.Instructions.Insert(12, new Instruction(OpCodes.Calli));
-							methodDef.Body.Instructions.Insert(13, new Instruction(OpCodes.Sizeof, operand));
+							methodDef.Body.Instructions.Insert(12, new Instruction(OpCodes.Ldstr , "Scold"));
+							methodDef.Body.Instructions.Insert(13, new Instruction(OpCodes.Unbox_Any));
+							methodDef.Body.Instructions.Insert(14, new Instruction(OpCodes.Call));
+							methodDef.Body.Instructions.Insert(15, new Instruction(OpCodes.Calli));
+							methodDef.Body.Instructions.Insert(16, new Instruction(OpCodes.Callvirt));
+							methodDef.Body.Instructions.Insert(17, new Instruction(OpCodes.Sizeof));
+							methodDef.Body.Instructions.Insert(18, new Instruction(OpCodes.Unaligned, operand));
 							methodDef.Body.Instructions.Insert(methodDef.Body.Instructions.Count, instruction);
 							methodDef.Body.Instructions.Insert(methodDef.Body.Instructions.Count, new Instruction(OpCodes.Stloc, local2));
 							methodDef.Body.Instructions.Insert(methodDef.Body.Instructions.Count, new Instruction(OpCodes.Br, instruction2));

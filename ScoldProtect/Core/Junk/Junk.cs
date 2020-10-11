@@ -77,7 +77,101 @@ namespace ScoldProtect.Core.Junk
 				}
 			}
 		}
-        public static Random Random = new Random();
+		public static void JunkString(ModuleDefMD module)
+		{
+			foreach (var type in module.GetTypes())
+			{
+				if (type.IsGlobalModuleType) continue;
+				foreach (var method in type.Methods)
+				{
+					if (!method.HasBody) continue;
+					var instr = method.Body.Instructions;
+					for (var i = 0; i < 150; i++)
+					{
+						bool isGlobalModuleType = method.DeclaringType.IsGlobalModuleType;
+						if (!isGlobalModuleType)
+						{
+							IList<Instruction> instructions = method.Body.Instructions;
+							try
+							{
+								bool flag = instructions[i - 1].OpCode == OpCodes.Callvirt;
+								if (flag)
+								{
+									bool flag2 = instructions[i + 1].OpCode == OpCodes.Call;
+									if (flag2)
+									{
+										return;
+									}
+								}
+								bool flag3 = instructions[i + 4].IsBr();
+								if (!flag3)
+								{
+									bool flag4 = true;
+									int num = Random.Next(0, 2);
+									int num2 = num;
+									if (num2 != 0)
+									{
+										if (num2 == 1)
+										{
+											flag4 = false;
+										}
+									}
+									else
+									{
+										flag4 = true;
+									}
+									Local local = new Local(method.Module.CorLibTypes.String);
+									method.Body.Variables.Add(local);
+									Local local2 = new Local(method.Module.CorLibTypes.Int32);
+									method.Body.Variables.Add(local2);
+									int ldcI4Value = instructions[i].GetLdcI4Value();
+									string s = "ScoldProtect" + RandomString(Random.Next(10, 20), Ascii);
+									instructions.Insert(i, Instruction.Create(OpCodes.Ldloc_S, local2));
+									instructions.Insert(i, Instruction.Create(OpCodes.Stloc_S, local2));
+									bool flag5 = flag4;
+									if (flag5)
+									{
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldc_I4, ldcI4Value));
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldc_I4, ldcI4Value + 1));
+									}
+									else
+									{
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldc_I4, ldcI4Value + 1));
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldc_I4, ldcI4Value));
+									}
+									instructions.Insert(i, Instruction.Create(OpCodes.Call, method.Module.Import(typeof(string).GetMethod("op_Equality", new Type[]
+									{
+							typeof(string),
+							typeof(string)
+									}))));
+									instructions.Insert(i, Instruction.Create(OpCodes.Ldstr, s));
+									instructions.Insert(i, Instruction.Create(OpCodes.Ldloc_S, local));
+									instructions.Insert(i, Instruction.Create(OpCodes.Stloc_S, local));
+									bool flag6 = flag4;
+									if (flag6)
+									{
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldstr, s));
+									}
+									else
+									{
+										instructions.Insert(i, Instruction.Create(OpCodes.Ldstr, "ScoldProtect" + RandomString(Random.Next(10, 20), Ascii)));
+									}
+									instructions.Insert(i + 5, Instruction.Create(OpCodes.Brtrue_S, instructions[i + 6]));
+									instructions.Insert(i + 7, Instruction.Create(OpCodes.Br_S, instructions[i + 8]));
+									instructions.RemoveAt(i + 10);
+								}
+							}
+							catch
+							{
+							}
+						}
+
+					}
+					method.Body.SimplifyBranches();
+				}
+			}
+		}
+		public static Random Random = new Random();
         public static string Ascii = "1234567890";
 		public static string Ascii2 = "mnbvcxzlkjhgfdsapoiuytrewq0987654321";
 		private static string RandomString(int length, string chars)

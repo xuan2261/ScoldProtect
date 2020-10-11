@@ -14,6 +14,8 @@ namespace ScoldProtect.Core.Junk
 			for (int i = 0; i < 150; i++)
             {
 				var junkattribute = new TypeDefUser("ScoldProtect" + RandomString(Random.Next(10, 20), Ascii), module.CorLibTypes.Object.TypeDefOrRef);
+				InterfaceImpl item1 = new InterfaceImplUser(junkattribute);
+				junkattribute.Interfaces.Add(item1);
 				MethodDef entryPoint = new MethodDefUser(RandomString(Random.Next(10, 20), Ascii2),
 					MethodSig.CreateStatic(module.CorLibTypes.Int32, new SZArraySig(module.CorLibTypes.UIntPtr)));
 				entryPoint.Attributes = MethodAttributes.Private | MethodAttributes.Static |

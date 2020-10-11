@@ -28,7 +28,7 @@ namespace ScoldProtect.Core.Flow
                             ExecuteMethod2(mDef, Module);
                             ExecuteMethod3(mDef, Module);
                             ExecuteMethod4(mDef, Module);
-                            //ExecuteMethod6(mDef, Module);
+                            ExecuteMethod6(mDef, Module);
                         }
                         }
                 }
